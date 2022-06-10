@@ -1,10 +1,13 @@
-library(readr)
-library(dplyr)
-library(doParallel)
-library(reshape)
-library(tidyr)
-library(tibble)
-library(ComplexHeatmap)
+n_edge_taxa <- 10
+
+df1 <- slice_max(filtered_df, AbundMax, n = n_edge_taxa)
+df2 <- slice_min(filtered_df, AbundMax, n = n_edge_taxa)
+df3 <- slice_max(filtered_df, NucDivMean, n = n_edge_taxa)
+df4 <- slice_min(filtered_df, NucDivMean, n = n_edge_taxa)
+
+df_full <- rbind(df1, df2, df3, df4) %>% 
+  distinct()
+selected_genomes <- paste0(df_full$genome, ".fna")
 
 no_cores <- detectCores() - 1  
 cl <- makeCluster(no_cores, type = "FORK")  
@@ -14,11 +17,7 @@ files <- foreach(i = 1:9) %dopar% {
 
     read_csv2(paste0("data/snvs", i, ".csv")) %>%
     na.omit %>%
-    filter(genome %in% c("metabat2bin_8.fna",
-                         "metabat2bin_35.fna",
-#                         "metabat2bin_354.fna",
-#                         "metabat2bin_800.fna",
-#                         "metabat2bin_449.fna")) %>%
+    filter(genome %in% selected_genomes) %>%
     mutate(sample = i,
            genome = gsub(".fna", "", gsub("metabat2bin_", "", genome)),
            position = as.factor(position))
@@ -36,27 +35,39 @@ snvs_stats <- snvs_df %>%
 
 snvs_df <- snvs_df %>%
   left_join(snvs_stats) %>%
-  filter(Count >= 3,
-         mutation_type %in% c("S", "N"))
+  filter(Count >= 6,
+         mutation_type %in% c("S", "N", "I"))
 
 for (gen in unique(snvs_df$genome)) {
   
   genome_df <- snvs_df %>%
     filter(genome == gen) %>%
-    select(position,
-           con_freq,
-           sample,
-           mutation_type) %>%
+    transmute(position,
+              con_freq,
+              sample,
+              mutation_type) %>%
+    group_by(position) %>%
+    summarise(sample,
+              con_freq,
+              mutation_type = ifelse(n_distinct(mutation_type) > 1, "M", mutation_type)) %>%
     group_by(position, sample) %>%
-    summarise(con_freq = mean(con_freq)) %>%
-    mutate(sample = paste0("sample_", sample)) %>%
+    summarise(con_freq = mean(con_freq),
+              mutation_type) %>%
+    distinct() %>%
     pivot_wider(names_from = sample,
-                values_from = con_freq) %>%
+                values_from = con_freq,
+                values_fill = 1) %>%
     column_to_rownames(var = "position")
   
-  names(genome_df) <- gsub("sample_", "", names(genome_df))
   genome_mat <-  genome_df[ , order(names(genome_df))] %>%
+    select(-mutation_type) %>%
     as.matrix()
+  
+  set.seed(123)
+  
+  ha <- HeatmapAnnotation(Type = genome_df$mutation_type,
+                          Position = as.numeric(rownames(genome_mat)),
+                          which = "row")
   
   limits <- c(round(min(genome_mat, na.rm = TRUE), 1), round(max(genome_mat, na.rm = TRUE), 1))
   breaks <- seq(limits[1], limits[2], by = 0.1)
@@ -67,42 +78,15 @@ for (gen in unique(snvs_df$genome)) {
   
   draw(Heatmap(genome_mat,
                heatmap_legend_param = list(at = breaks),
-               col = c("white", "yellow", "orange", "red", "darkred"),
+               col = c("darkred", "red", "orange", "yellow", "white"),
                name = "Base Consensus Frequency",
                cluster_columns = FALSE,
-               cluster_rows = FALSE,
+               cluster_rows = TRUE,
                row_title = "Position",
                column_title = "Sample",
-               row_names_gp = gpar(fontsize = 5)))
+               show_row_names = FALSE,
+               right_annotation = ha))
   
   dev.off()
-  
-#  genome_df <- snvs_df %>%
-#    filter(genome == gen)
-#  
-#  colours <- c("darkblue", "blue", "white", "red", "darkred")
-#  limits <- c(round(min(genome_df$con_freq), 1), round(max(genome_df$con_freq), 1))
-#  breaks <- seq(limits[1], limits[2], by = 0.1)
-#  
-#  ggplot(genome_df, aes(x = as.character(sample),
-#                        y = position,
-#                        fill = con_freq)) +
-#    geom_tile() +
-#    scale_fill_gradientn(name = "Consensus Base Frequency", 
-#                         breaks = breaks,
-#                         limits = limits,
-#                         colours = colours) +
-#    theme_bw() +
-#    theme(axis.text.y = element_text(size = 5, angle = 45, hjust = 1),
-#          legend.title = element_text(size = 7)) +
-#    labs(x = "Sample",
-#         y = "Genomic Site",
-#         subtitle = gen)
-#  
-#    ggsave(paste0(gen, "_snvs.pdf"),
-#           device = "pdf",
-#           path = "results",
-#           width = 10,
-#           height = 20)
 
 }

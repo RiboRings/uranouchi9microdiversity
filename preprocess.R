@@ -12,6 +12,8 @@ library(patchwork)
 library(ComplexHeatmap)
 library(tibble)
 
+library(doParallel)
+
 df <- read_csv2("data/mags.csv")
 
 files <- list()
@@ -49,8 +51,7 @@ nucdiv_shift_mat <- matrix(nrow = dim(nucdiv_mat)[[1]], ncol = dim(nucdiv_mat)[[
 for (i in seq(1, dim(rpkm_mat)[[2]] - 1)) {
   
   rpkm_shift_mat[ , i] <- map2_dbl(rpkm_mat[ , i + 1], rpkm_mat[ , i], `/`)
-  # nucdiv_shift_mat[ , i] <- nucdiv_mat[ , i + 1] / nucdiv_mat[ , i]
-  
+
 }
 
 colnames(rpkm_shift_mat) <- sapply(seq(1, 8), function(x) paste0("Ratio_", x))
