@@ -36,11 +36,7 @@ ratio_stats <- lapply(names(df)[names(df) %>% startsWith("AbundRatio")],
      ratio_stats[[5]] /
      ratio_stats[[6]])
 
-mean_rpkm_threshold <- 2
 min_coverage_threshold <- 5
-
-filtered_df <- df %>%
-  filter(AbundMax >= mean_rpkm_threshold)
 
 filtered_df <- df %>%
   filter(MinCov > min_coverage_threshold) %>%

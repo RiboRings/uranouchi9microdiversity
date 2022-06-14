@@ -1,13 +1,23 @@
 n_edge_taxa <- 10
 
-df1 <- slice_max(filtered_df, AbundMax, n = n_edge_taxa)
-df2 <- slice_min(filtered_df, AbundMax, n = n_edge_taxa)
-df3 <- slice_max(filtered_df, NucDivMean, n = n_edge_taxa)
-df4 <- slice_min(filtered_df, NucDivMean, n = n_edge_taxa)
+selected_df1 <- filtered_df %>%
+  arrange(desc(NucDivMean), desc(AbundMax)) %>%
+  slice_head(n = n_edge_taxa)
 
-df_full <- rbind(df1, df2, df3, df4) %>% 
+selected_df2 <- filtered_df %>%
+  arrange(NucDivMean, desc(AbundMax)) %>%
+  slice_head(n = n_edge_taxa)
+
+selected_df3 <- filtered_df %>%
+  arrange(desc(AbundMax)) %>%
+  slice_head(n = n_edge_taxa)
+
+selected_df <- rbind(selected_df1,
+                     selected_df2,
+                     selected_df3) %>%
   distinct()
-selected_genomes <- paste0(df_full$genome, ".fna")
+
+selected_genomes <- paste0(selected_df$genome, ".fna")
 
 no_cores <- detectCores() - 1  
 cl <- makeCluster(no_cores, type = "FORK")  
@@ -34,7 +44,7 @@ snvs_stats <- snvs_df %>%
   summarise(Count = n())
 
 snvs_df <- snvs_df %>%
-  left_join(snvs_stats) %>%
+  left_join(snvs_stats)
   filter(Count >= 6,
          mutation_type %in% c("S", "N", "I"))
 
@@ -65,9 +75,23 @@ for (gen in unique(snvs_df$genome)) {
   
   set.seed(123)
   
-  ha <- HeatmapAnnotation(Type = genome_df$mutation_type,
-                          Position = as.numeric(rownames(genome_mat)),
-                          which = "row")
+  row_ha <- HeatmapAnnotation(Type = genome_df$mutation_type,
+                              Position = as.numeric(rownames(genome_mat)),
+                              which = "row")
+  
+  tax_df <- filtered_df %>%
+    filter(genome == gen) %>%
+    transmute(Tax = paste(Order, Family, Genus, Species, sep = ";"))
+  
+  rpkm_df <- filtered_df %>%
+    filter(genome == gen) %>%
+    select(starts_with("RPKM")) %>%
+    melt() %>%
+    mutate(variable = gsub("RPKM_", "", variable)) %>%
+    filter(variable %in% colnames(genome_mat))
+  
+  col_ha <- HeatmapAnnotation(RPKM = anno_barplot(rpkm_df$value),
+                              which = "col")
   
   limits <- c(round(min(genome_mat, na.rm = TRUE), 1), round(max(genome_mat, na.rm = TRUE), 1))
   breaks <- seq(limits[1], limits[2], by = 0.1)
@@ -83,9 +107,10 @@ for (gen in unique(snvs_df$genome)) {
                cluster_columns = FALSE,
                cluster_rows = TRUE,
                row_title = "Position",
-               column_title = "Sample",
+               column_title = tax_df$Tax,
                show_row_names = FALSE,
-               right_annotation = ha))
+               right_annotation = row_ha,
+               top_annotation = col_ha))
   
   dev.off()
 
