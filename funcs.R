@@ -7,3 +7,9 @@ plot_distribution <- function(cur_stat) {
     theme_bw()
   
 }
+
+snv_dist <- function(arg1, arg2) {
+  
+  return(round(sum(abs(arg1 - arg2)), digits = 1))
+  
+}

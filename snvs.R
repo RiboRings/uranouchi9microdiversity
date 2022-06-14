@@ -79,18 +79,28 @@ for (gen in unique(snvs_df$genome)) {
                               Position = as.numeric(rownames(genome_mat)),
                               which = "row")
   
-  tax_df <- filtered_df %>%
+  tax_df <- selected_df %>%
     filter(genome == gen) %>%
     transmute(Tax = paste(Order, Family, Genus, Species, sep = ";"))
   
-  rpkm_df <- filtered_df %>%
+  rpkm_df <- selected_df %>%
     filter(genome == gen) %>%
     select(starts_with("RPKM")) %>%
     melt() %>%
     mutate(variable = gsub("RPKM_", "", variable)) %>%
     filter(variable %in% colnames(genome_mat))
   
+  snv_shift_vector <- 0
+  
+  for (i in seq(1, dim(genome_mat)[[2]] - 1)) {
+    
+    snv_shift_vector <- snv_shift_vector %>%
+      append(snv_dist(genome_mat[ , i + 1], genome_mat[ , i]))
+    
+  }
+  
   col_ha <- HeatmapAnnotation(RPKM = anno_barplot(rpkm_df$value),
+                              Distance = snv_shift_vector,
                               which = "col")
   
   limits <- c(round(min(genome_mat, na.rm = TRUE), 1), round(max(genome_mat, na.rm = TRUE), 1))
