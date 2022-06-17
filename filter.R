@@ -51,6 +51,6 @@ mean_range_plot2 <- ggplot(filtered_df, aes(x = AbundMean, y = AbundRange, colou
 
 mean_range_plot1 / mean_range_plot2
 
-ggplot(filtered_df, aes(y = AbundRange)) +
-  geom_boxjitter() +
-  theme_bw()
+#ggplot(filtered_df, aes(y = AbundRange)) +
+#  geom_boxjitter() +
+#  theme_bw()

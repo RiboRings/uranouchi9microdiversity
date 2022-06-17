@@ -43,3 +43,20 @@ ggsave("multifacets.pdf",
        path = "results",
        width = n_top_taxa,
        height = 3)
+
+#time_series_df <- time_series_df %>%
+#  mutate(LogRPKM = log10(RPKM))
+#
+#ggplot(time_series_df, aes(x = Sample)) +
+#  geom_line(aes(y = LogRPKM), colour = "Black") +
+#  geom_line(aes(y = NucDiv * 50), colour = "Dark Gray") +
+#  scale_x_continuous(limits = c(1, 9),
+#                     breaks = c(1, 3, 5, 7, 9)) +
+#  scale_y_continuous(name = "Log RPKM",
+#                     sec.axis = sec_axis(~./50,
+#                                         name = "Nucleotide Diversity",
+#                     )) +
+#  facet_grid(~genome) +
+#  theme_bw() +
+#  theme(axis.title.y = element_text(colour = "Black"),
+#        axis.title.y.right = element_text(colour = "Dark Gray"))

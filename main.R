@@ -6,4 +6,5 @@ source("3dplot.R")
 source("microdiversity.R")
 source("multifacets.R")
 source("snvs.R")
+source("fuhrman.R")
 

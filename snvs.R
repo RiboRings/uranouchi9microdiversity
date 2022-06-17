@@ -44,7 +44,7 @@ snvs_stats <- snvs_df %>%
   summarise(Count = n())
 
 snvs_df <- snvs_df %>%
-  left_join(snvs_stats)
+  left_join(snvs_stats) %>%
   filter(Count >= 6,
          mutation_type %in% c("S", "N", "I"))
 
@@ -79,18 +79,29 @@ for (gen in unique(snvs_df$genome)) {
                               Position = as.numeric(rownames(genome_mat)),
                               which = "row")
   
-  tax_df <- filtered_df %>%
-    filter(genome == gen) %>%
+  tax_df <- selected_df %>%
+    filter(genome == paste0("metabat2bin_", gen)) %>%
     transmute(Tax = paste(Order, Family, Genus, Species, sep = ";"))
   
-  rpkm_df <- filtered_df %>%
-    filter(genome == gen) %>%
+  rpkm_df <- selected_df %>%
+    filter(genome == paste0("metabat2bin_", gen)) %>%
     select(starts_with("RPKM")) %>%
     melt() %>%
     mutate(variable = gsub("RPKM_", "", variable)) %>%
     filter(variable %in% colnames(genome_mat))
   
+  snv_shift_vector <- 0
+  
+  for (i in seq(1, dim(genome_mat)[[2]] - 1)) {
+    
+    snv_shift_vector <- snv_shift_vector %>%
+      append(round(snv_dist(genome_mat[ , i + 1], genome_mat[ , i]),
+                   digits = 3))
+    
+  }
+  
   col_ha <- HeatmapAnnotation(RPKM = anno_barplot(rpkm_df$value),
+                              Distance = anno_points(snv_shift_vector),
                               which = "col")
   
   limits <- c(round(min(genome_mat, na.rm = TRUE), 1), round(max(genome_mat, na.rm = TRUE), 1))
@@ -104,7 +115,8 @@ for (gen in unique(snvs_df$genome)) {
                heatmap_legend_param = list(at = breaks),
                col = c("darkred", "red", "orange", "yellow", "white"),
                name = "Base Consensus Frequency",
-               cluster_columns = FALSE,
+               cluster_columns = TRUE,
+               column_dend_reorder = FALSE,
                cluster_rows = TRUE,
                row_title = "Position",
                column_title = tax_df$Tax,
