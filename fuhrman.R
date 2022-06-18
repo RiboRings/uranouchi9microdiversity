@@ -116,7 +116,7 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   bar_array <- 10 - bar_array
   bar_df <- as.data.frame(bar_array)
   
-  p2 <- ggplot(tot_ar_df, aes(x = bar_array)) +
+  p2 <- ggplot(bar_df, aes(x = bar_array)) +
     geom_bar() +
     scale_x_reverse(limits = c(10, 0),
                     breaks = seq(9, 1, by = -1)) +
@@ -124,9 +124,15 @@ for (cur_genome in unique(fuhrman_df$genome)) {
          y = "Number of SNVs") +
     theme_bw() +
     theme(panel.grid = element_blank())
+
+  tax_df <- selected_df %>%
+    filter(genome == paste0("metabat2bin_", cur_genome)) %>%
+    transmute(Tax = paste(Order, Family, Genus, Species, sep = ";"))
   
   p <- p2 + p1 +
-    plot_layout(guides = "collect")
+    plot_layout(guides = "collect") +
+    plot_annotation(title = "Dynamics of within-species Variation",
+                    subtitle = paste0("Genome: ", cur_genome, ". Taxonomy: ", tax_df$Tax))
   
   ggsave(paste0("fuhrman", cur_genome, ".pdf"),
          plot = p,
