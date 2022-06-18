@@ -117,7 +117,7 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   bar_df <- as.data.frame(bar_array)
   
   p2 <- ggplot(bar_df, aes(x = bar_array)) +
-    geom_bar() +
+    geom_bar(aes(y = (..count..) / sum(..count..))) +
     scale_x_reverse(limits = c(10, 0),
                     breaks = seq(9, 1, by = -1)) +
     labs(x = "Consensus Base Recurrence",
