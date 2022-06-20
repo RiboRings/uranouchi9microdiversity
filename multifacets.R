@@ -1,9 +1,25 @@
-n_top_taxa <- 15
+n_edge_taxa <- 15
 
-time_series_df <- filtered_df %>%
-  slice_max(AbundMax, n = n_top_taxa)
+selected_df1 <- filtered_df %>%
+  arrange(desc(NucDivMean), desc(AbundMax)) %>%
+  slice_head(n = n_edge_taxa)
 
-time_series_df1 <- time_series_df %>%
+selected_df2 <- filtered_df %>%
+  arrange(NucDivMean, desc(AbundMax)) %>%
+  slice_head(n = n_edge_taxa)
+
+selected_df3 <- filtered_df %>%
+  arrange(desc(AbundMax)) %>%
+  slice_head(n = n_edge_taxa)
+
+selected_df <- rbind(selected_df1,
+                     selected_df2,
+                     selected_df3) %>%
+  distinct()
+
+selected_genomes <- paste0(selected_df$genome, ".fna")
+
+time_series_df1 <- selected_df %>%
   select(genome,
          starts_with("nucdiv_")) %>%
   pivot_longer(starts_with("nucdiv"),
@@ -11,7 +27,7 @@ time_series_df1 <- time_series_df %>%
                names_to = "Sample") %>%
   mutate(Sample = as.numeric(gsub("nucdiv_", "", Sample)))
 
-time_series_df2 <- time_series_df %>%
+time_series_df2 <- selected_df %>%
   select(genome,
          starts_with("RPKM")) %>%
   pivot_longer(starts_with("RPKM"),
@@ -23,6 +39,14 @@ time_series_df <- time_series_df1 %>%
   full_join(time_series_df2) %>%
   mutate(genome = gsub("metabat2bin_", "", genome))
 
+nucdiv_range_df <- time_series_df %>%
+  group_by(genome) %>%
+  summarise(NucDivRange = max(NucDiv, na.rm = TRUE) - min(NucDiv, na.rm = TRUE))
+
+time_series_df <- time_series_df %>%
+  left_join(nucdiv_range_df) %>%
+  arrange(desc(NucDivRange))
+
 p <- ggplot(time_series_df, aes(x = Sample)) +
   geom_line(aes(y = RPKM), colour = "Black") +
   geom_line(aes(y = NucDiv * 1000), colour = "Dark Gray") +
@@ -32,17 +56,19 @@ p <- ggplot(time_series_df, aes(x = Sample)) +
                      sec.axis = sec_axis(~./1000,
                                          name = "Nucleotide Diversity",
                                          )) +
-  facet_grid(~genome) +
+  facet_wrap(~ NucDivRange + genome,
+             nrow = 2) +
   theme_bw() +
   theme(axis.title.y = element_text(colour = "Black"),
-        axis.title.y.right = element_text(colour = "Dark Gray"))
+        axis.title.y.right = element_text(colour = "Dark Gray"),
+        panel.grid = element_blank())
 
 ggsave("multifacets.pdf",
        plot = p,
        device = "pdf",
        path = "results",
-       width = n_top_taxa,
-       height = 3)
+       width = length(selected_genomes) / 2,
+       height = 6)
 
 #time_series_df <- time_series_df %>%
 #  mutate(LogRPKM = log10(RPKM))
@@ -60,3 +86,4 @@ ggsave("multifacets.pdf",
 #  theme_bw() +
 #  theme(axis.title.y = element_text(colour = "Black"),
 #        axis.title.y.right = element_text(colour = "Dark Gray"))
+  
