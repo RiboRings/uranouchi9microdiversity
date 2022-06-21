@@ -9,6 +9,10 @@ df$AbundMax <- rowMaxs(mat)
 df$AbundRange <- rowMaxs(mat) - rowMins(mat)
 df$AbundSd <- rowSds(mat)
 
+abund_max_idx <- c()
+for (i in 1:nrow(rpkm_mat)) abund_max_idx <- append(abund_max_idx, which(rpkm_mat[i, ] == rowMaxs(rpkm_mat, na.rm = TRUE)[[i]])[[1]])
+df$AbundMaxIdx <- abund_max_idx
+
 df$AbundRatioMean <- rowMeans(rpkm_shift_mat)
 df$AbundRatioMedian <- rowMedians(rpkm_shift_mat)
 df$AbundRatioMin <- rowMins(rpkm_shift_mat)

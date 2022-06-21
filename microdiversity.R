@@ -8,12 +8,21 @@ filtered_df$NonsynonimousFractionMean <- filtered_df %>%
   as.matrix() %>%
   rowMeans(na.rm = TRUE)
 
-p <- ggplot(filtered_df, aes(x = DiSiperMbpMean,
-           y = NonsynonimousFractionMean,
-           colour = AbundMax)) +
+disi_array <- sapply(iter(filtered_df, by = "row"),
+                     max_mapper, pattern = "DiSiperMbp")
+nsf_array <- sapply(iter(filtered_df, by = "row"),
+                    max_mapper, pattern = "NonsynonimousFraction")
+
+microdiversity_df <- data.frame("DiSiperMbpAtAbundMax" = disi_array,
+                                "NonsynonimousFractionAtAbundMax" = nsf_array,
+                                "AbundMax" = filtered_df$AbundMax)
+
+p <- ggplot(microdiversity_df, aes(x = DiSiperMbpAtAbundMax,
+            y = NonsynonimousFractionAtAbundMax,
+            colour = AbundMax)) +
   geom_point(size = 1) +
-  labs(x = "Mean Divergent Sites per Mbp",
-       y = "Mean Nonsynonymous Fraction",
+  labs(x = "Divergent Sites per Mbp at Max RPKM",
+       y = "Nonsynonymous Fraction at Max RPKM",
        colour = "Max RPKM") +
   theme_classic()
 

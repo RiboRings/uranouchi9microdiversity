@@ -24,3 +24,14 @@ freq_mapper <- function(cur_pos) {
   return(freq_array)
   
 }
+
+max_mapper <- function(cur_pos, pattern) {
+  
+  max_val <- cur_pos %>%
+    select(contains(paste(pattern, cur_pos$AbundMaxIdx, sep = "_"))) %>%
+    as.vector() %>%
+    as.numeric()
+  
+  return(max_val)
+  
+}
