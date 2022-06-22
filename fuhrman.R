@@ -1,15 +1,4 @@
-fuhrman_df <- read_csv2("data/snvs.csv")
-
-fuhrman_df <- fuhrman_df %>%
-  select(genome,
-         scaffold,
-         position,
-         con_base,
-         A, C, T, G,
-         sample)
-
-#for (cur_genome in unique(fuhrman_df$genome)) {
-for (cur_genome in c("8")) {
+for (cur_genome in unique(fuhrman_df$genome)) {
 
   consensus_base_df <- fuhrman_df %>%
     filter(genome == cur_genome) %>%
