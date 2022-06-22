@@ -8,7 +8,8 @@ fuhrman_df <- fuhrman_df %>%
          A, C, T, G,
          sample)
 
-for (cur_genome in unique(fuhrman_df$genome)) {
+#for (cur_genome in unique(fuhrman_df$genome)) {
+for (cur_genome in c("8")) {
 
   consensus_base_df <- fuhrman_df %>%
     filter(genome == cur_genome) %>%
@@ -106,20 +107,19 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   bar_array <- c()
   for (i in 1:nrow(consensus_base_mat)) {
     
+    opts <- unique(consensus_base_mat[i, ])
     bar_array <- append(bar_array,
-                     consensus_base_mat[i, ] %>%
-                       as.vector() %>%
-                       n_distinct())
+                        max(sapply(opts, function(x) sum(x == consensus_base_mat[i, ]))))
     
   }
   
-  bar_array <- 10 - bar_array
   bar_df <- as.data.frame(bar_array)
   
   p2 <- ggplot(bar_df, aes(x = bar_array)) +
     geom_bar(aes(y = (..count..) / sum(..count..))) +
     scale_x_reverse(limits = c(10, 0),
                     breaks = seq(9, 1, by = -1)) +
+    scale_y_continuous(limits = c(0, 1)) +
     labs(x = "Consensus Base Recurrence",
          y = "Number of SNVs") +
     theme_bw() +
