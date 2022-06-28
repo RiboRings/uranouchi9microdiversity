@@ -47,3 +47,28 @@ snvs_df <- snvs_df %>%
   left_join(snvs_stats)
 
 write_csv2(snvs_df, "snvs.csv")
+
+### other stuff
+
+file1 <- read_csv2("data/mags.csv") %>%
+  select(-N50, -length)
+file2 <- read_csv("genomeInformation.csv") %>%
+  transmute(Bin = gsub(".fna", "", genome),
+            length,
+            N50)
+file3 <- file1 %>%
+  left_join(file2)
+
+write_csv2(df, "data/mags.csv")
+
+test <- micro_df
+test2 <- test %>% mutate(sample = paste0("scaffolds_", sample)) %>%
+  filter(genome %in% unique(df$Bin))
+df <- df[order(df$Bin), ]
+test2 <- test2[order(test2$genome), ]
+test2 <- pivot_wider(test2, names_from = sample, values_from = true_scaffolds)
+test2 <- test2 %>% column_to_rownames(var = "genome") %>%
+  as.matrix()
+
+lol <- rowMeans(test2, na.rm = TRUE) %>% as.vector() %>% as.numeric()
+df$scaffolds <- lol

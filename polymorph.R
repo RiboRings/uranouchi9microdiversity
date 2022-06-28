@@ -47,18 +47,21 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   
   count_df$Time <- as.factor(rep(seq(1, 9), 9))
   
-  up_lim <- ceiling(max(count_df$Count) / 10000) * 10000
-  down_lim <- floor(min(count_df$Count) / 10000) * 10000
+  count_df <- count_df %>%
+    group_by(RefSample) %>%
+    summarise(Count,
+              Time,
+              Percent = Count / max(Count))
   
   p1 <- ggplot(count_df, aes(x = Time,
-                             y = Count,
+                             y = Percent,
                              colour = RefSample,
                              group = RefSample)) +
     geom_point() +
     geom_line() +
-    scale_y_continuous(limits = c(down_lim, up_lim),
-                       breaks = seq(down_lim, up_lim, by = (up_lim - down_lim) / 5)) +
-    labs(y = "Shared Polymorphic Sites",
+    scale_y_continuous(limits = c(0, 1),
+                       breaks = seq(0, 1, by = 0.1)) +
+    labs(y = "Percent of Shared Polymorphic Sites",
          colour = "Reference Sample") +
     theme_bw() +
     theme(panel.grid = element_blank())
@@ -102,9 +105,9 @@ for (cur_genome in unique(fuhrman_df$genome)) {
           axis.title.y.right = element_text(colour = "Dark Gray"),
           panel.grid = element_blank())
   
-  tax_df <- selected_df %>%
+  tax_df <- top_df %>%
     filter(genome == paste0("metabat2bin_", cur_genome)) %>%
-    transmute(Tax = paste(Order, Family, Genus, Species, sep = ";"))
+    transmute(Tax = paste(Phylum, Order, Family, Genus, sep = ";"))
   
   p <- (p2 / p3 | p1) +
     plot_layout(guides = "collect") +

@@ -3,15 +3,13 @@ library(dplyr)
 library(tidyr)
 library(purrr)
 library(reshape)
-
 library(MatrixGenerics)
 library(ggplot2)
+library(ggrepel)
 #library(ggpol)
 library(patchwork)
-
 library(ComplexHeatmap)
 library(tibble)
-
 library(doParallel)
 
 df <- read_csv2("data/mags.csv")
@@ -31,7 +29,8 @@ micro_df <- merge_all(files) %>%
 
 micro_stats <- micro_df %>%
   summarise(MeanCov = mean(coverage),
-            MinCov = min(coverage))
+            MinCov = min(coverage),
+            MaxCov = max(coverage))
 
 df <- micro_stats %>%
   left_join(df, by = c("genome" = "Bin"))

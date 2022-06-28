@@ -20,41 +20,36 @@ df$AbundRatioMax <- rowMaxs(rpkm_shift_mat)
 df$AbundRatioRange <- rowMaxs(rpkm_shift_mat) - rowMins(rpkm_shift_mat)
 df$AbundRatioSd <- rowSds(rpkm_shift_mat)
 
-stats <- lapply(names(df)[names(df) %>% startsWith("Abund")],
-                plot_distribution)
+p1 <- ggplot(df, aes(x = MaxCov, y = scaffolds)) +
+  geom_point() +
+  geom_smooth() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "Minimum Coverage",
+       y = "Number of Contigs") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
 
-(stats[[1]] /
-    stats[[2]] /
-    stats[[3]]) |
-  (stats[[4]] /
-     stats[[5]] /
-     stats[[6]])
+p2 <- ggplot(df, aes(x = MaxCov, y = N50)) +
+  geom_point() +
+  geom_smooth() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "Minimum Coverage") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
 
-ratio_stats <- lapply(names(df)[names(df) %>% startsWith("AbundRatio")],
-                           plot_distribution)
+p3 <- p1 + p2
 
-(ratio_stats[[1]] /
-    ratio_stats[[2]] /
-    ratio_stats[[3]]) |
-  (ratio_stats[[4]] /
-     ratio_stats[[5]] /
-     ratio_stats[[6]])
+ggsave("quality_check.pdf",
+       plot = p3,
+       device = "pdf",
+       width = 14,
+       height = 7,
+       path = "results")
 
-min_coverage_threshold <- 5
+max_coverage_threshold <- 10
 
 filtered_df <- df %>%
-  filter(MinCov > min_coverage_threshold) %>%
+  filter(MaxCov > max_coverage_threshold) %>%
   arrange(desc(AbundMax))
-
-mean_range_plot1 <- ggplot(df, aes(x = AbundMean, y = AbundRange, colour = AbundRatioRange)) +
-  geom_point() +
-  theme_classic()
-mean_range_plot2 <- ggplot(filtered_df, aes(x = AbundMean, y = AbundRange, colour = AbundRatioRange)) +
-  geom_point() +
-  theme_classic()
-
-mean_range_plot1 / mean_range_plot2
-
-#ggplot(filtered_df, aes(y = AbundRange)) +
-#  geom_boxjitter() +
-#  theme_bw()
