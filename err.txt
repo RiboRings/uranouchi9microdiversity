@@ -1,0 +1,253 @@
+Loading R/4.1.2
+  Loading requirement: gmp/6.1.2 mpfr/4.0.2 mpc/1.1.0 gcc/9.4.0 bzip2/1.0.8
+    xz/5.2.4 OpenBLAS/0.3.6.THREAD
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘reshape’
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, smiths
+
+The following object is masked from ‘package:dplyr’:
+
+    rename
+
+Loading required package: matrixStats
+
+Attaching package: ‘matrixStats’
+
+The following object is masked from ‘package:dplyr’:
+
+    count
+
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.10.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite:
+Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+  genomic data. Bioinformatics 2016.
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading required package: foreach
+
+Attaching package: ‘foreach’
+
+The following objects are masked from ‘package:purrr’:
+
+    accumulate, when
+
+Loading required package: iterators
+Loading required package: parallel
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 60
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr  (9): Bin, QualityScore, Domain, Phylum, Class, Order, Family, Genus, Sp...
+dbl (51): Completeness, Contamination, Heterogeneity, DiSiperMbp_1, DiSiperM...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 696 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr (1): genome
+dbl (8): DiSiperMbp, pNpS, NonsynonimousFraction, TPM, popANI_reference, pop...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+`geom_smooth()` using method = 'loess' and formula 'y ~ x'
+`geom_smooth()` using method = 'loess' and formula 'y ~ x'
+
+Attaching package: ‘plotly’
+
+The following object is masked from ‘package:ComplexHeatmap’:
+
+    add_heatmap
+
+The following object is masked from ‘package:ggplot2’:
+
+    last_plot
+
+The following object is masked from ‘package:reshape’:
+
+    rename
+
+The following object is masked from ‘package:stats’:
+
+    filter
+
+The following object is masked from ‘package:graphics’:
+
+    layout
+
+Warning messages:
+1: Removed 107 rows containing missing values (geom_point). 
+2: Removed 107 rows containing missing values (geom_text_repel). 
+Joining, by = c("genome", "Sample")
+Joining, by = "genome"
+Warning message:
+Removed 2 row(s) containing missing values (geom_path). 
+ℹ Using "','" as decimal and "'.'" as grouping mark. Use `read_delim()` for more control.
+Rows: 8093778 Columns: 22
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ";"
+chr  (8): scaffold, ref_base, con_base, var_base, gene, mutation, mutation_t...
+dbl (13): position, position_coverage, allele_count, ref_freq, con_freq, var...
+lgl  (1): cryptic
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+465
+1
+2
+3
+4
+5
+6
+7
+8
+9
+`summarise()` has grouped output by 'RefSample'. You can override using the `.groups` argument.
+plot 1
+plot 1 done
+plot 2
+plot 2 done
+plot 3
+plot 3 done
+465 completed
+1103
+1
+2
+3
+4
+5
+6
+7
+8
+9
+`summarise()` has grouped output by 'RefSample'. You can override using the `.groups` argument.
+plot 1
+plot 1 done
+plot 2
+plot 2 done
+plot 3
+plot 3 done
+Error in seq.default(range[1], range[2], length.out = self$detail) : 
+  'from' must be of length 1
+Calls: source ... <Anonymous> -> f -> <Anonymous> -> f -> seq -> seq.default
+Execution halted

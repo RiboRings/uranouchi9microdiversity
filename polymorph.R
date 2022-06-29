@@ -9,6 +9,8 @@ fuhrman_df <- fuhrman_df %>%
          sample)
 
 for (cur_genome in unique(fuhrman_df$genome)) {
+
+  message(cur_genome)
   
   consensus_base_df <- fuhrman_df %>%
     filter(genome == cur_genome) %>%
@@ -32,6 +34,8 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   count_list <- list()
   
   for (cur_sample in 1:9) {
+
+    message(cur_sample)
     
     sample_mat <- consensus_base_mat[!is.na(consensus_base_mat[ , cur_sample]), ]
     
@@ -52,6 +56,8 @@ for (cur_genome in unique(fuhrman_df$genome)) {
     summarise(Count,
               Time,
               Percent = Count / max(Count))
+
+  message("plot 1")
   
   p1 <- ggplot(count_df, aes(x = Time,
                              y = Percent,
@@ -65,6 +71,8 @@ for (cur_genome in unique(fuhrman_df$genome)) {
          colour = "Reference Sample") +
     theme_bw() +
     theme(panel.grid = element_blank())
+
+  message("plot 1 done")
   
   bar_array <- c()
   for (i in 1:nrow(consensus_base_mat)) {
@@ -76,6 +84,8 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   }
   
   bar_df <- as.data.frame(bar_array)
+
+  message("plot 2")
   
   p2 <- ggplot(bar_df, aes(x = bar_array)) +
     geom_bar(aes(y = (..count..) / sum(..count..))) +
@@ -86,9 +96,13 @@ for (cur_genome in unique(fuhrman_df$genome)) {
          y = "Number of SNVs") +
     theme_bw() +
     theme(panel.grid = element_blank())
+
+  message("plot 2 done")
   
   genome_time_series_df <- time_series_df %>%
     filter(genome == cur_genome)
+
+  message("plot 3")
   
   p3 <- ggplot(genome_time_series_df, aes(x = Sample)) +
     geom_line(aes(y = RPKM), colour = "Black") +
@@ -104,8 +118,10 @@ for (cur_genome in unique(fuhrman_df$genome)) {
     theme(axis.title.y = element_text(colour = "Black"),
           axis.title.y.right = element_text(colour = "Dark Gray"),
           panel.grid = element_blank())
+
+  message("plot 3 done")
   
-  tax_df <- top_df %>%
+  tax_df <- df %>%
     filter(genome == paste0("metabat2bin_", cur_genome)) %>%
     transmute(Tax = paste(Phylum, Order, Family, Genus, sep = ";"))
   
@@ -120,5 +136,7 @@ for (cur_genome in unique(fuhrman_df$genome)) {
          width = 20,
          path = "results",
          device = "pdf")
+
+  message(paste(cur_genome, "completed", sep = " "))
 
 }
