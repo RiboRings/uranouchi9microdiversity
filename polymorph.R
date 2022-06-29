@@ -1,12 +1,12 @@
-fuhrman_df <- read_csv2("data/snvs.csv")
+fuhrman_df <- read_csv("data/snvs.csv")
 
 fuhrman_df <- fuhrman_df %>%
-  select(genome,
-         scaffold,
-         position,
-         con_base,
-         A, C, T, G,
-         sample)
+  transmute(genome = gsub("metabat2bin_", "", gsub(".fna", "", genome)),
+            scaffold,
+            position,
+            con_base,
+            A, C, T, G,
+            sample)
 
 for (cur_genome in unique(fuhrman_df$genome)) {
 
