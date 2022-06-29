@@ -10,7 +10,7 @@ fuhrman_df <- fuhrman_df %>%
 
 for (cur_genome in unique(fuhrman_df$genome)) {
 
-  message(cur_genome)
+  message(paste("analysing genome", cur_genome))
   
   consensus_base_df <- fuhrman_df %>%
     filter(genome == cur_genome) %>%
@@ -35,7 +35,7 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   
   for (cur_sample in 1:9) {
 
-    message(cur_sample)
+    message(paste("computing sample", cur_sample))
     
     sample_mat <- consensus_base_mat[!is.na(consensus_base_mat[ , cur_sample]), ]
     
@@ -57,7 +57,7 @@ for (cur_genome in unique(fuhrman_df$genome)) {
               Time,
               Percent = Count / max(Count))
 
-  message("plot 1")
+  message("generating plot 1")
   
   p1 <- ggplot(count_df, aes(x = Time,
                              y = Percent,
@@ -85,7 +85,7 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   
   bar_df <- as.data.frame(bar_array)
 
-  message("plot 2")
+  message("generating plot 2")
   
   p2 <- ggplot(bar_df, aes(x = bar_array)) +
     geom_bar(aes(y = (..count..) / sum(..count..))) +
@@ -102,7 +102,7 @@ for (cur_genome in unique(fuhrman_df$genome)) {
   genome_time_series_df <- time_series_df %>%
     filter(genome == cur_genome)
 
-  message("plot 3")
+  message("generating plot 3")
   
   p3 <- ggplot(genome_time_series_df, aes(x = Sample)) +
     geom_line(aes(y = RPKM), colour = "Black") +
@@ -137,6 +137,6 @@ for (cur_genome in unique(fuhrman_df$genome)) {
          path = "results",
          device = "pdf")
 
-  message(paste(cur_genome, "completed", sep = " "))
+  message(paste(cur_genome, "completed"))
 
 }
