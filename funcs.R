@@ -41,7 +41,7 @@ sample_loader <- function(sample_name, method = read_csv) {
   sample_df <- method(sample_name) %>%
     mutate(sample = gsub(".csv", "", gsub("data/", "", sample_name))) %>%
     left_join(mapping) %>%
-    filter(genome %in% c("metabat2bin_835.fna", "metabat2bin_538.fna")) %>%
+    filter(genome == "metabat2bin_835.fna") %>%
     
   return(sample_df)
   

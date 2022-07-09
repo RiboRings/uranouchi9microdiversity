@@ -1,34 +1,33 @@
-library(readr)
 library(dplyr)
-library(reshape)
+library(tidyr)
+library(readr)
 
-func_annot <- read_tsv("data/538_func_annot/PROKKA_07042022.tsv")
+sample_loader <- function(sample_name, method = read_csv) {
+  
+  sample_df <- method(sample_name) %>%
+    mutate(sample = gsub(".csv", "", gsub("data/", "", sample_name))) %>%
+    left_join(mapping) %>%
+    filter(genome == "metabat2bin_835.fna") %>%
+    
+    return(sample_df)
+  
+}
+
 mapping <- read_tsv("data/mapping.stb", col_names = c("scaffold", "genome"))
-gene_files <- list.files(pattern = "gene_info*",
-                         path = "data")
-gene_file_list <- lapply(paste0("data/", gene_files),
+
+gene_info_files <- list.files(path = "data", pattern = "gene_info*")
+
+gene_info_list <- lapply(paste("data", gene_info_files, sep = "/"),
                          sample_loader,
                          method = read_tsv)
 
-gene_df <- merge_all(gene_file_list) %>%
-  left_join(mapping) %>%
-  transmute(genome,
-         scaffold,
-         gene,
-         sample = gsub("gene_info", "", gsub(".tsv", "", sample)),
-         dNdS_substitutions,
-         pNpS_variants,
-         nucl_diversity,
-         coverage,
-         breadth,
-         SNV_count,
-         divergent_site_count,
-         gene_length,
-         start,
-         end)
+gene_info_df <- gene_info_list %>%
+  merge_all()
 
-gene_df <- gene_df[!is.na(gene_df$pNpS_variants), ]
-gene_stats <- gene_df %>%
-  group_by(genome, gene) %>%
-  summarise(MaxpNpS = max(pNpS_variants)) %>%
-  slice_max(MaxpNpS, n = 10)
+gene_stats_df <- gene_info_df %>%
+  group_by(gene) %>%
+  summarise(pNpS = max(pNpS_variants)) %>%
+  arrange(desc(pNpS))
+
+func_annot <- read_csv2("test.gff")
+write_csv2(left_join(gene_stats_df, func_annot), "data/new_func_annot.csv")
