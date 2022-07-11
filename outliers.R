@@ -1,19 +1,3 @@
-mapping <- read_tsv("data/mapping.stb", col_names = c("scaffold", "genome"))
-
-gene_info_files <- list.files(path = "data", pattern = "gene_info*")
-
-gene_info_list <- lapply(paste("data", gene_info_files, sep = "/"),
-                         sample_loader,
-                         method = read_tsv)
-
-gene_info_df <- gene_info_list %>%
-  merge_all()
-
-gene_stats_df <- gene_info_df %>%
-  group_by(gene) %>%
-  summarise(pNpS = max(pNpS_variants)) %>%
-  arrange(desc(pNpS))
-
 func_annot <- read_csv2("data/func_annot.csv")
 
 func_annot_df <- func_annot %>%
