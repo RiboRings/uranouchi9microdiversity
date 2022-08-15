@@ -6,11 +6,11 @@ library(reshape)
 library(MatrixGenerics)
 library(ggplot2)
 library(ggrepel)
-#library(ggpol)
 library(patchwork)
 library(ComplexHeatmap)
 library(tibble)
 library(doParallel)
+library(stringr)
 
 df <- read_csv2("data/mags.csv")
 

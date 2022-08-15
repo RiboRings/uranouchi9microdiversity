@@ -1,5 +1,5 @@
-source("preprocess.R")
 source("funcs.R")
+source("preprocess.R")
 source("filter.R")
 source("composition.R")
 source("3dplot.R")

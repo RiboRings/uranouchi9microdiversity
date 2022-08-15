@@ -1,8 +1,10 @@
 n_top_taxa <- 50
 
-top_df <- filtered_df %>%
-  slice_max(AbundMax, n = n_top_taxa) %>%
+filtered_df <- filtered_df %>%
   mutate(Tax = gsub("metabat2bin_", "", paste(Order, genome, sep = ";")))
+
+top_df <- filtered_df %>%
+  slice_max(AbundMax, n = n_top_taxa)
 
 heatmap_mat <- top_df %>%
   select(Tax, starts_with("RPKM")) %>%

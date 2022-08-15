@@ -36,13 +36,13 @@ max_mapper <- function(cur_pos, pattern) {
   
 }
 
-sample_loader <- function(sample_name, method = read_csv) {
+sample_loader <- function(sample_name, gen_list = "", method = read_csv) {
   
   sample_df <- method(sample_name) %>%
-    mutate(sample = gsub(".csv", "", gsub("data/", "", sample_name))) %>%
+    mutate(sample = as.numeric(gsub(".tsv", "", gsub("data/gene_info", "", sample_name)))) %>%
     left_join(mapping) %>%
-    filter(genome == "metabat2bin_835.fna") %>%
-    
+    filter(AbundMaxIdx == sample)
+  
   return(sample_df)
   
 }
